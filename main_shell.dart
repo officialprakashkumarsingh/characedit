@@ -9,6 +9,7 @@ import 'models.dart';
 import 'saved_page.dart';
 import 'auth_service.dart';
 import 'characters_page.dart';
+import 'discover_page.dart';
 
 class MainShell extends StatefulWidget {
   const MainShell({super.key});
@@ -174,7 +175,7 @@ class _MainShellState extends State<MainShell> {
   Widget build(BuildContext context) {
     final List<Widget> pages = [
       ChatPage(key: _chatPageKey, onBookmark: _bookmarkMessage, selectedModel: _selectedModel),
-      const PlaceholderPage(title: 'Discover'),
+      const DiscoverPage(),
       CharactersPage(selectedModel: _selectedModel),
       SavedPage(
         bookmarkedMessages: _bookmarkedMessages,
@@ -262,19 +263,3 @@ class _MainShellState extends State<MainShell> {
   }
 }
 
-/* ----------------------------------------------------------
-   PLACEHOLDER PAGE for other tabs
----------------------------------------------------------- */
-class PlaceholderPage extends StatelessWidget {
-  final String title;
-  const PlaceholderPage({super.key, required this.title});
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        '$title Page',
-        style: Theme.of(context).textTheme.headlineMedium?.copyWith(color: Colors.grey),
-      ),
-    );
-  }
-}
