@@ -119,64 +119,68 @@ class _AuthPageState extends State<_AuthPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color(0xFFFBFBFB),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 32.0),
             child: Container(
-              constraints: const BoxConstraints(maxWidth: 400),
+              constraints: const BoxConstraints(maxWidth: 380),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const SizedBox(height: 60),
+                  const SizedBox(height: 80),
                   
-                  // AhamAI Logo - Simple black text as requested
+                  // AhamAI Logo - Minimalistic
                   Text(
                     'AhamAI', 
-                    style: GoogleFonts.pacifico(
-                      fontSize: 48, 
+                    style: TextStyle(
+                      fontSize: 36, 
                       color: Colors.black87,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  
-                  const SizedBox(height: 12),
-                  
-                  // Simple underline
-                  Container(
-                    height: 2,
-                    width: 60,
-                    color: Colors.blue.shade600,
-                  ),
-                  
-                  const SizedBox(height: 40),
-                  
-                  Text(
-                    widget.showLoginPage 
-                        ? 'Welcome back' 
-                        : 'Create your account',
-                    style: GoogleFonts.inter(
-                      fontSize: 24, 
-                      color: Colors.black87,
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.w300,
+                      letterSpacing: -0.5,
                     ),
                   ),
                   
                   const SizedBox(height: 8),
                   
+                  // Simple dot instead of line
+                  Container(
+                    width: 4,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade400,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  
+                  const SizedBox(height: 48),
+                  
                   Text(
                     widget.showLoginPage 
-                        ? 'Sign in to continue' 
-                        : 'Join AhamAI today',
-                    style: GoogleFonts.inter(
-                      fontSize: 16, 
+                        ? 'Welcome back' 
+                        : 'Get started',
+                    style: TextStyle(
+                      fontSize: 20, 
+                      color: Colors.black87,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  
+                  const SizedBox(height: 6),
+                  
+                  Text(
+                    widget.showLoginPage 
+                        ? 'Sign in to your account' 
+                        : 'Create your account',
+                    style: TextStyle(
+                      fontSize: 14, 
                       color: Colors.grey.shade600,
                       fontWeight: FontWeight.w400,
                     ),
                   ),
                   
-                  const SizedBox(height: 48),
+                  const SizedBox(height: 40),
 
                   // Form with animation
                   AnimatedSwitcher(
@@ -185,26 +189,26 @@ class _AuthPageState extends State<_AuthPage> {
                     child: widget.showLoginPage ? _buildLoginForm() : _buildSignupForm(),
                   ),
                   
-                  const SizedBox(height: 32),
+                  const SizedBox(height: 24),
                   
-                  // Submit button
-                  SizedBox(
+                  // Submit button - Smaller and minimalistic
+                  Container(
                     width: double.infinity,
-                    height: 56,
+                    height: 44,
                     child: _isLoading
                         ? Container(
                             decoration: BoxDecoration(
                               color: Colors.grey.shade100,
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: Colors.grey.shade200),
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(color: Colors.grey.shade200, width: 1),
                             ),
                             child: const Center(
                               child: SizedBox(
-                                width: 24,
-                                height: 24,
+                                width: 18,
+                                height: 18,
                                 child: CircularProgressIndicator(
                                   strokeWidth: 2,
-                                  color: Colors.blue,
+                                  color: Colors.grey,
                                 ),
                               ),
                             ),
@@ -212,35 +216,35 @@ class _AuthPageState extends State<_AuthPage> {
                         : ElevatedButton(
                             onPressed: _handleSubmit,
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.blue.shade600,
+                              backgroundColor: Colors.black87,
                               foregroundColor: Colors.white,
                               elevation: 0,
                               shadowColor: Colors.transparent,
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius: BorderRadius.circular(8),
                               ),
                             ),
                             child: Text(
                               widget.showLoginPage ? 'Sign In' : 'Create Account', 
-                              style: GoogleFonts.inter(
-                                fontSize: 16, 
-                                fontWeight: FontWeight.w600,
+                              style: TextStyle(
+                                fontSize: 14, 
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
                           ),
                   ),
                   
-                  const SizedBox(height: 32),
+                  const SizedBox(height: 24),
 
-                  // Toggle between login/signup
+                  // Toggle between login/signup - More subtle
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        widget.showLoginPage ? 'New to AhamAI?' : 'Already have an account?',
-                        style: GoogleFonts.inter(
+                        widget.showLoginPage ? 'New here?' : 'Have an account?',
+                        style: TextStyle(
                           color: Colors.grey.shade600,
-                          fontSize: 14,
+                          fontSize: 13,
                           fontWeight: FontWeight.w400,
                         ),
                       ),
@@ -248,23 +252,25 @@ class _AuthPageState extends State<_AuthPage> {
                       TextButton(
                         onPressed: widget.onToggle,
                         style: TextButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
                           minimumSize: Size.zero,
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         ),
                         child: Text(
-                          widget.showLoginPage ? 'Create account' : 'Sign in',
-                          style: GoogleFonts.inter(
-                            fontWeight: FontWeight.w600, 
-                            color: Colors.blue.shade600,
-                            fontSize: 14,
+                          widget.showLoginPage ? 'Sign up' : 'Sign in',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500, 
+                            color: Colors.black87,
+                            fontSize: 13,
+                            decoration: TextDecoration.underline,
+                            decorationColor: Colors.black87,
                           ),
                         ),
                       ),
                     ],
                   ),
                   
-                  const SizedBox(height: 60),
+                  const SizedBox(height: 80),
                 ],
               ),
             ),
@@ -279,13 +285,13 @@ class _AuthPageState extends State<_AuthPage> {
       key: const ValueKey('login'),
       children: [
         _buildTextField(
-          controller: _emailController, 
+          _emailController, 
           hintText: 'Email', 
           icon: Icons.email_outlined,
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 12),
         _buildTextField(
-          controller: _passwordController, 
+          _passwordController, 
           hintText: 'Password', 
           icon: Icons.lock_outline, 
           obscureText: true,
@@ -299,19 +305,19 @@ class _AuthPageState extends State<_AuthPage> {
       key: const ValueKey('signup'),
       children: [
         _buildTextField(
-          controller: _nameController, 
+          _nameController, 
           hintText: 'Full Name', 
           icon: Icons.person_outline,
         ),
         const SizedBox(height: 16),
         _buildTextField(
-          controller: _emailController, 
+          _emailController, 
           hintText: 'Email', 
           icon: Icons.email_outlined,
         ),
         const SizedBox(height: 16),
         _buildTextField(
-          controller: _passwordController, 
+          _passwordController, 
           hintText: 'Password', 
           icon: Icons.lock_outline, 
           obscureText: true,
@@ -338,49 +344,48 @@ class _AuthPageState extends State<_AuthPage> {
     );
   }
 
-  Widget _buildTextField({
-    required TextEditingController controller, 
+  Widget _buildTextField(TextEditingController controller, {
     required String hintText, 
     required IconData icon, 
     bool obscureText = false,
   }) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.grey.shade50,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade200),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.grey.shade300, width: 1),
       ),
       child: TextField(
         controller: controller,
         obscureText: obscureText,
-        style: GoogleFonts.inter(
-          fontSize: 15, 
+        style: TextStyle(
+          fontSize: 14, 
           fontWeight: FontWeight.w400,
           color: Colors.black87,
         ),
         decoration: InputDecoration(
           hintText: hintText,
-          hintStyle: GoogleFonts.inter(
+          hintStyle: TextStyle(
             color: Colors.grey.shade500,
-            fontSize: 15,
+            fontSize: 14,
             fontWeight: FontWeight.w400,
           ),
           prefixIcon: Icon(
             icon, 
-            color: Colors.grey.shade600, 
-            size: 20,
+            color: Colors.grey.shade500, 
+            size: 18,
           ),
           filled: false,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
           border: InputBorder.none,
           enabledBorder: InputBorder.none,
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: Colors.blue.shade600, width: 2),
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide(color: Colors.black87, width: 1.5),
           ),
           errorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(color: Colors.red, width: 2),
+            borderRadius: BorderRadius.circular(8),
+            borderSide: const BorderSide(color: Colors.red, width: 1.5),
           ),
         ),
       ),
@@ -391,9 +396,9 @@ class _AuthPageState extends State<_AuthPage> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.grey.shade50,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade200),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.grey.shade300, width: 1),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -402,16 +407,16 @@ class _AuthPageState extends State<_AuthPage> {
           return GestureDetector(
             onTap: () => setState(() => _selectedAvatarUrl = url),
             child: Container(
-              padding: const EdgeInsets.all(3),
+              padding: const EdgeInsets.all(2),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: isSelected ? Colors.blue.shade600 : Colors.grey.shade300,
-                  width: isSelected ? 2.5 : 1,
+                  color: isSelected ? Colors.black87 : Colors.grey.shade300,
+                  width: isSelected ? 2 : 1,
                 ),
               ),
               child: CircleAvatar(
-                radius: 24, 
+                radius: 22, 
                 backgroundImage: NetworkImage(url),
               ),
             ),

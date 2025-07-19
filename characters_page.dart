@@ -63,8 +63,6 @@ class _CharactersPageState extends State<CharactersPage> with TickerProviderStat
     return characters;
   }
 
-
-
   void _createNewCharacter() {
     Navigator.push(
       context,
@@ -99,8 +97,9 @@ class _CharactersPageState extends State<CharactersPage> with TickerProviderStat
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Delete Character'),
-        content: Text('Are you sure you want to delete "${character.name}"?'),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Text('Delete ${character.name}?'),
+        content: const Text('This action cannot be undone.'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
@@ -116,7 +115,7 @@ class _CharactersPageState extends State<CharactersPage> with TickerProviderStat
     );
 
     if (confirmed == true) {
-      await _characterService.deleteCharacter(character.id);
+      _characterService.deleteCharacter(character.id);
     }
   }
 
@@ -125,129 +124,275 @@ class _CharactersPageState extends State<CharactersPage> with TickerProviderStat
     final characters = _filteredCharacters;
 
     return Scaffold(
-      body: FadeTransition(
-        opacity: _fadeAnimation,
-        child: CustomScrollView(
-          slivers: [
-            SliverAppBar(
-              expandedHeight: 120,
-              floating: false,
-              pinned: true,
-              backgroundColor: const Color(0xFFF7F7F7),
-              elevation: 0,
-              flexibleSpace: FlexibleSpaceBar(
-                title: Text(
-                  'AI Characters',
-                  style: GoogleFonts.poppins(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
+      backgroundColor: const Color(0xFFF8F9FA),
+      body: SafeArea(
+        child: Column(
+          children: [
+            // Header
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: Row(
+                children: [
+                  const Text(
+                    'Characters',
+                    style: TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  const Spacer(),
+                  // Small new character button
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade100,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.grey.shade300, width: 1),
+                    ),
+                    child: IconButton(
+                      onPressed: _createNewCharacter,
+                      icon: Icon(Icons.add, color: Colors.grey.shade700, size: 20),
+                      iconSize: 20,
+                      constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
+                      tooltip: 'New Character',
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            
+            // Search bar
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(color: Colors.grey.shade200, width: 1),
+                ),
+                child: TextField(
+                  onChanged: (value) => setState(() => _searchQuery = value),
+                  decoration: InputDecoration(
+                    hintText: 'Search characters...',
+                    prefixIcon: Icon(Icons.search, color: Colors.grey.shade500, size: 20),
+                    border: InputBorder.none,
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    hintStyle: TextStyle(color: Colors.grey.shade500, fontSize: 15),
                   ),
                 ),
-                titlePadding: const EdgeInsets.only(left: 16, bottom: 16),
               ),
-              automaticallyImplyLeading: false,
             ),
             
-            // Search and filter bar
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  children: [
-                    // Search bar
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(16),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.05),
-                            blurRadius: 10,
-                            offset: const Offset(0, 2),
+            const SizedBox(height: 20),
+            
+            // Characters list
+            Expanded(
+              child: characters.isEmpty
+                  ? Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.person_outline,
+                            size: 64,
+                            color: Colors.grey.shade400,
                           ),
+                          const SizedBox(height: 16),
+                          Text(
+                            _searchQuery.isEmpty 
+                                ? 'No characters yet' 
+                                : 'No characters found',
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.grey.shade600,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          if (_searchQuery.isEmpty)
+                            TextButton.icon(
+                              onPressed: _createNewCharacter,
+                              icon: const Icon(Icons.add, size: 18),
+                              label: const Text('Create your first character'),
+                              style: TextButton.styleFrom(
+                                foregroundColor: Colors.grey.shade700,
+                              ),
+                            ),
                         ],
                       ),
-                      child: TextField(
-                        onChanged: (value) => setState(() => _searchQuery = value),
-                        decoration: InputDecoration(
-                          hintText: 'Search characters...',
-                          prefixIcon: const Icon(Icons.search, color: Colors.grey),
-                          border: InputBorder.none,
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                          hintStyle: GoogleFonts.poppins(color: Colors.grey),
-                        ),
-                      ),
+                    )
+                  : ListView.builder(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      itemCount: characters.length,
+                      itemBuilder: (context, index) {
+                        final character = characters[index];
+                        return _CharacterListItem(
+                          character: character,
+                          onTap: () => _chatWithCharacter(character),
+                          onEdit: () => _editCharacter(character),
+                          onDelete: () => _deleteCharacter(character),
+                        );
+                      },
                     ),
-                    
-                    const SizedBox(height: 16),
-                  ],
-                ),
-              ),
-            ),
-            
-            // Characters grid
-            SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              sliver: SliverGrid(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 0.75,
-                  crossAxisSpacing: 16,
-                  mainAxisSpacing: 16,
-                ),
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    final character = characters[index];
-                    
-                    return _CharacterCard(
-                      character: character,
-                      onLongPress: () => _showCharacterOptions(character),
-                      onChatTap: () => _chatWithCharacter(character),
-                    );
-                  },
-                  childCount: characters.length,
-                ),
-              ),
-            ),
-            
-            // Add some bottom padding
-            const SliverToBoxAdapter(
-              child: SizedBox(height: 100),
             ),
           ],
         ),
       ),
-      
-      floatingActionButton: Container(
-        margin: const EdgeInsets.only(bottom: 80), // Move above bottom navigation
-        child: FloatingActionButton.extended(
-          onPressed: _createNewCharacter,
-          icon: const Icon(Icons.add_rounded, size: 20),
-          label: Text(
-            'New Character',
-            style: GoogleFonts.poppins(
-              fontWeight: FontWeight.w600,
-              fontSize: 14,
+    );
+  }
+}
+
+class _CharacterListItem extends StatelessWidget {
+  final Character character;
+  final VoidCallback onTap;
+  final VoidCallback onEdit;
+  final VoidCallback onDelete;
+
+  const _CharacterListItem({
+    required this.character,
+    required this.onTap,
+    required this.onEdit,
+    required this.onDelete,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.grey.shade200, width: 1),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(16),
+          onTap: onTap,
+          onLongPress: () => _showOptions(context),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              children: [
+                // Avatar
+                Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.grey.shade300, width: 2),
+                  ),
+                  child: CircleAvatar(
+                    radius: 28,
+                    backgroundImage: NetworkImage(character.avatarUrl),
+                    backgroundColor: Colors.grey.shade100,
+                  ),
+                ),
+                
+                const SizedBox(width: 16),
+                
+                // Content
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              character.name,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black87,
+                              ),
+                            ),
+                          ),
+                          if (character.customTag != null)
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                              decoration: BoxDecoration(
+                                color: Colors.grey.shade200,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Text(
+                                character.customTag!,
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.grey.shade700,
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                      
+                      const SizedBox(height: 4),
+                      
+                      Text(
+                        character.description,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey.shade600,
+                          height: 1.3,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+                
+                const SizedBox(width: 12),
+                
+                // Action buttons
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade100,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: IconButton(
+                        onPressed: onTap,
+                        icon: Icon(Icons.chat_bubble_outline, color: Colors.grey.shade700),
+                        iconSize: 18,
+                        constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                        tooltip: 'Chat',
+                      ),
+                    ),
+                    
+                    const SizedBox(width: 8),
+                    
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade100,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: IconButton(
+                        onPressed: () => _showOptions(context),
+                        icon: Icon(Icons.more_vert, color: Colors.grey.shade700),
+                        iconSize: 18,
+                        constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                        tooltip: 'Options',
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
-          ),
-          backgroundColor: Colors.black87,
-          foregroundColor: Colors.white,
-          elevation: 8,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
           ),
         ),
       ),
     );
   }
 
-  void _showCharacterOptions(Character character) {
+  void _showOptions(BuildContext context) {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
       builder: (context) => Container(
         decoration: const BoxDecoration(
-          color: Color(0xFFF7F7F7),
+          color: Colors.white,
           borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
         ),
         child: SafeArea(
@@ -279,14 +424,14 @@ class _CharactersPageState extends State<CharactersPage> with TickerProviderStat
                         children: [
                           Text(
                             character.name,
-                            style: GoogleFonts.poppins(
+                            style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           Text(
                             character.description,
-                            style: GoogleFonts.poppins(
+                            style: TextStyle(
                               fontSize: 14,
                               color: Colors.grey.shade600,
                             ),
@@ -303,7 +448,7 @@ class _CharactersPageState extends State<CharactersPage> with TickerProviderStat
                 title: Text('Chat with ${character.name}'),
                 onTap: () {
                   Navigator.pop(context);
-                  _chatWithCharacter(character);
+                  onTap();
                 },
               ),
               
@@ -312,7 +457,7 @@ class _CharactersPageState extends State<CharactersPage> with TickerProviderStat
                 title: const Text('Edit Character'),
                 onTap: () {
                   Navigator.pop(context);
-                  _editCharacter(character);
+                  onEdit();
                 },
               ),
               
@@ -322,171 +467,13 @@ class _CharactersPageState extends State<CharactersPage> with TickerProviderStat
                   title: const Text('Delete Character', style: TextStyle(color: Colors.red)),
                   onTap: () {
                     Navigator.pop(context);
-                    _deleteCharacter(character);
+                    onDelete();
                   },
                 ),
               
               const SizedBox(height: 16),
             ],
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class _CharacterCard extends StatelessWidget {
-  final Character character;
-  final VoidCallback onLongPress;
-  final VoidCallback onChatTap;
-
-  const _CharacterCard({
-    required this.character,
-    required this.onLongPress,
-    required this.onChatTap,
-  });
-
-
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onLongPress: onLongPress,
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: Colors.grey.shade200, width: 1),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 10,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Avatar section
-            Expanded(
-              flex: 3,
-              child: Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-                  color: Colors.grey.shade50,
-                ),
-                child: Stack(
-                  children: [
-                    Center(
-                      child: Hero(
-                        tag: 'character_${character.id}',
-                        child: Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(color: Colors.grey.shade300, width: 2),
-                          ),
-                          child: CircleAvatar(
-                            radius: 40,
-                            backgroundImage: NetworkImage(character.avatarUrl),
-                            backgroundColor: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                    
-                    if (character.customTag != null)
-                      Positioned(
-                        top: 12,
-                        right: 12,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: character.isBuiltIn 
-                              ? Colors.grey.shade700 
-                              : Colors.black87,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Text(
-                            character.customTag!,
-                            style: GoogleFonts.poppins(
-                              color: Colors.white,
-                              fontSize: 10,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-            ),
-            
-            // Content section
-            Expanded(
-              flex: 2,
-              child: Padding(
-                padding: const EdgeInsets.all(12),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      character.name,
-                      style: GoogleFonts.poppins(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    
-                    const SizedBox(height: 4),
-                    
-                    Expanded(
-                      child: Text(
-                        character.description,
-                        style: GoogleFonts.poppins(
-                          fontSize: 12,
-                          color: Colors.grey.shade600,
-                        ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    
-                    const SizedBox(height: 8),
-                    
-                    // Action buttons
-                    Row(
-                      children: [
-                        Expanded(
-                          child: ElevatedButton.icon(
-                            onPressed: onChatTap,
-                            icon: const Icon(Icons.chat, size: 16),
-                            label: Text(
-                              'Chat',
-                              style: GoogleFonts.poppins(fontSize: 12),
-                            ),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.black87,
-                              foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(vertical: 8),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              elevation: 2,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
         ),
       ),
     );
