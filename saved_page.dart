@@ -41,132 +41,128 @@ class _SavedPageState extends State<SavedPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F7F7),
-      appBar: AppBar(
-        title: const Text(
-          'Saved',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.black87,
-            fontSize: 24,
-          ),
-        ),
-        backgroundColor: const Color(0xFFF7F7F7),
-        elevation: 0,
-        automaticallyImplyLeading: false,
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(60),
-          child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  blurRadius: 10,
-                  offset: const Offset(0, 2),
-                ),
-              ],
+      backgroundColor: const Color(0xFFF8F9FA),
+      body: SafeArea(
+        child: Column(
+          children: [
+            // Header
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: Row(
+                children: [
+                  const Text(
+                    'Saved',
+                    style: TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  const Spacer(),
+                  Icon(
+                    Icons.bookmark_outline,
+                    color: Colors.grey.shade600,
+                    size: 24,
+                  ),
+                ],
+              ),
             ),
-            child: _CustomSegmentedControl(
-              selectedIndex: _selectedIndex,
-              onChanged: (index) {
-                _pageController.animateToPage(
-                  index,
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeInOut,
-                );
-              },
+            
+            // Tab selector
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 20),
+              padding: const EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.grey.shade200, width: 1),
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: _TabButton(
+                      title: 'Chat History',
+                      isSelected: _selectedIndex == 0,
+                      onTap: () {
+                        setState(() => _selectedIndex = 0);
+                        _pageController.animateToPage(
+                          0,
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
+                        );
+                      },
+                    ),
+                  ),
+                  Expanded(
+                    child: _TabButton(
+                      title: 'Bookmarks',
+                      isSelected: _selectedIndex == 1,
+                      onTap: () {
+                        setState(() => _selectedIndex = 1);
+                        _pageController.animateToPage(
+                          1,
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
+            
+            const SizedBox(height: 20),
+            
+            // Content
+            Expanded(
+              child: PageView(
+                controller: _pageController,
+                onPageChanged: (index) {
+                  setState(() {
+                    _selectedIndex = index;
+                  });
+                },
+                children: [
+                  _ChatHistoryView(chatHistory: widget.chatHistory, onLoadChat: widget.onLoadChat),
+                  _SavedRepliesView(bookmarkedMessages: widget.bookmarkedMessages),
+                ],
+              ),
+            ),
+          ],
         ),
-      ),
-      body: PageView(
-        controller: _pageController,
-        onPageChanged: (index) {
-          setState(() {
-            _selectedIndex = index;
-          });
-        },
-        children: [
-          _ChatHistoryView(chatHistory: widget.chatHistory, onLoadChat: widget.onLoadChat),
-          _SavedRepliesView(bookmarkedMessages: widget.bookmarkedMessages),
-        ],
       ),
     );
   }
 }
 
-/* ----------------------------------------------------------
-   CUSTOM SEGMENTED CONTROL
----------------------------------------------------------- */
-class _CustomSegmentedControl extends StatelessWidget {
-  final int selectedIndex;
-  final ValueChanged<int> onChanged;
+class _TabButton extends StatelessWidget {
+  final String title;
+  final bool isSelected;
+  final VoidCallback onTap;
 
-  const _CustomSegmentedControl({required this.selectedIndex, required this.onChanged});
+  const _TabButton({
+    required this.title,
+    required this.isSelected,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.all(8),
-      padding: const EdgeInsets.all(4),
-      decoration: BoxDecoration(
-        color: const Color(0xFFF1F5F9),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Stack(
-        children: [
-          AnimatedPositioned(
-            duration: const Duration(milliseconds: 250),
-            curve: Curves.easeInOut,
-            left: selectedIndex == 0 ? 0 : (MediaQuery.of(context).size.width - 48) / 2,
-            right: selectedIndex == 1 ? 0 : (MediaQuery.of(context).size.width - 48) / 2,
-            child: Container(
-              height: 40,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.08),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  )
-                ],
-              ),
-            ),
-          ),
-          Row(
-            children: [
-              _buildSegment("History", 0),
-              _buildSegment("Saved Replies", 1),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSegment(String title, int index) {
-    final isSelected = selectedIndex == index;
-    return Expanded(
-      child: GestureDetector(
-        onTap: () => onChanged(index),
-        child: Container(
-          height: 40,
-          alignment: Alignment.center,
-          color: Colors.transparent,
-          child: AnimatedDefaultTextStyle(
-            duration: const Duration(milliseconds: 250),
-            style: TextStyle(
-              color: isSelected ? Colors.black87 : Colors.grey.shade600,
-              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-              fontSize: 15,
-              fontFamily: 'Inter',
-            ),
-            child: Text(title),
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        decoration: BoxDecoration(
+          color: isSelected ? Colors.black87 : Colors.transparent,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Text(
+          title,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            color: isSelected ? Colors.white : Colors.grey.shade600,
           ),
         ),
       ),

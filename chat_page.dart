@@ -522,62 +522,145 @@ class _InputBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 10.0),
-      child: Column(
-        children: [
-          if (isEditing)
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-              margin: const EdgeInsets.only(left: 20, right: 20, bottom: 8),
-              decoration: BoxDecoration(
-                color: Colors.blue.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Row(
-                children: [
-                  const Expanded(child: Text("Editing message...", style: TextStyle(color: Colors.black87))),
-                  IconButton(icon: const Icon(Icons.close), onPressed: onCancelEdit, iconSize: 20),
-                ],
-              ),
-            ),
-          Container(
-            margin: const EdgeInsets.fromLTRB(20, 0, 20, 12),
-            decoration: BoxDecoration(
-              color: const Color(0xFFF7F7F7),
-              borderRadius: BorderRadius.circular(32),
-              boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 20, offset: const Offset(0, 4))],
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                if (onFilesUploaded != null)
-                  FileUploadWidget(onFilesUploaded: onFilesUploaded),
-                Expanded(
-                  child: TextField(
-                    controller: controller,
-                    enabled: !awaitingReply,
-                    maxLines: null,
-                    textCapitalization: TextCapitalization.sentences,
-                    cursorColor: Colors.blue,
-                    textInputAction: TextInputAction.send,
-                    onSubmitted: (_) => onSend(),
-                    decoration: InputDecoration(
-                      hintText: awaitingReply ? 'AhamAI is responding...' : 'Message AhamAI…',
-                      border: InputBorder.none,
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 22, vertical: 14),
-                    ),
-                  ),
-                ),
-                IconButton(
-                  padding: const EdgeInsets.all(12),
-                  onPressed: awaitingReply ? onStop : onSend,
-                  icon: Icon(awaitingReply ? Icons.stop_circle : Icons.arrow_outward, color: awaitingReply ? Colors.red : Colors.black87),
-                ),
-              ],
-            ),
+    return Container(
+      padding: const EdgeInsets.only(bottom: 12.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 20,
+            offset: const Offset(0, -2),
           ),
         ],
+      ),
+      child: SafeArea(
+        child: Column(
+          children: [
+            if (isEditing)
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                margin: const EdgeInsets.only(left: 16, right: 16, bottom: 8, top: 8),
+                decoration: BoxDecoration(
+                  color: Colors.blue.shade50,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: Colors.blue.shade200, width: 1),
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.edit, color: Colors.blue.shade600, size: 18),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        "Editing message...", 
+                        style: TextStyle(
+                          color: Colors.blue.shade700,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.close, color: Colors.blue.shade600), 
+                      onPressed: onCancelEdit, 
+                      iconSize: 20,
+                      constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                      padding: EdgeInsets.zero,
+                    ),
+                  ],
+                ),
+              ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFAFAFA), // Light white/off-white
+                  borderRadius: BorderRadius.circular(28),
+                  border: Border.all(
+                    color: Colors.grey.shade200,
+                    width: 1.5,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.02),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    if (onFilesUploaded != null)
+                      Padding(
+                        padding: const EdgeInsets.only(left: 4),
+                        child: FileUploadWidget(onFilesUploaded: onFilesUploaded),
+                      ),
+                    Expanded(
+                      child: TextField(
+                        controller: controller,
+                        enabled: !awaitingReply,
+                        maxLines: 6,
+                        minLines: 1,
+                        textCapitalization: TextCapitalization.sentences,
+                        cursorColor: Colors.black87,
+                        textInputAction: TextInputAction.send,
+                        onSubmitted: (_) => onSend(),
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.black87,
+                          height: 1.4,
+                        ),
+                        decoration: InputDecoration(
+                          hintText: awaitingReply 
+                              ? 'AhamAI is responding...' 
+                              : 'Type your message...',
+                          hintStyle: TextStyle(
+                            color: Colors.grey.shade500,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w400,
+                          ),
+                          border: InputBorder.none,
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 20, 
+                            vertical: 14,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 4, bottom: 4),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: awaitingReply ? Colors.red.shade500 : Colors.black87,
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: (awaitingReply ? Colors.red.shade500 : Colors.black87)
+                                  .withOpacity(0.2),
+                              blurRadius: 8,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: IconButton(
+                          padding: const EdgeInsets.all(12),
+                          onPressed: awaitingReply ? onStop : onSend,
+                          icon: Icon(
+                            awaitingReply ? Icons.stop_rounded : Icons.arrow_upward_rounded,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                          constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
