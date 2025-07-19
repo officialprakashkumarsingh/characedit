@@ -220,37 +220,21 @@ class _CharactersPageState extends State<CharactersPage> with TickerProviderStat
       
       floatingActionButton: Container(
         margin: const EdgeInsets.only(bottom: 80), // Move above bottom navigation
-        child: Container(
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              colors: [Colors.black87, Colors.grey],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
+        child: FloatingActionButton.extended(
+          onPressed: _createNewCharacter,
+          icon: const Icon(Icons.add_rounded, size: 20),
+          label: Text(
+            'New Character',
+            style: GoogleFonts.poppins(
+              fontWeight: FontWeight.w600,
+              fontSize: 14,
             ),
-            borderRadius: BorderRadius.circular(25),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.3),
-                blurRadius: 8,
-                offset: const Offset(0, 4),
-              ),
-            ],
           ),
-          child: FloatingActionButton.extended(
-            onPressed: _createNewCharacter,
-            icon: const Icon(Icons.add_rounded, size: 18),
-            label: Text(
-              'New',
-              style: GoogleFonts.poppins(
-                fontWeight: FontWeight.w700,
-                fontSize: 12,
-                letterSpacing: 0.5,
-              ),
-            ),
-            backgroundColor: Colors.transparent,
-            foregroundColor: Colors.white,
-            elevation: 0,
-            extendedPadding: const EdgeInsets.symmetric(horizontal: 12),
+          backgroundColor: Colors.black87,
+          foregroundColor: Colors.white,
+          elevation: 8,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
           ),
         ),
       ),
@@ -362,44 +346,22 @@ class _CharacterCard extends StatelessWidget {
     required this.onChatTap,
   });
 
-  // Helper method to get default background colors for built-in characters
-  Color _getDefaultBackgroundColor() {
-    // Create different colors based on character name hash for consistency
-    final hash = character.name.hashCode;
-    final colors = [
-      const Color(0xFFE3F2FD), // Light Blue
-      const Color(0xFFF3E5F5), // Light Purple
-      const Color(0xFFE8F5E8), // Light Green
-      const Color(0xFFFFF3E0), // Light Orange
-      const Color(0xFFFCE4EC), // Light Pink
-      const Color(0xFFE0F2F1), // Light Teal
-      const Color(0xFFF1F8E9), // Light Lime
-      const Color(0xFFFFF8E1), // Light Amber
-    ];
-    return colors[hash.abs() % colors.length];
-  }
+
 
   @override
   Widget build(BuildContext context) {
-    // Get background color - use custom color if available, otherwise use default
-    Color backgroundColor;
-    if (character.backgroundColor != null) {
-      backgroundColor = Color(character.backgroundColor!);
-    } else {
-      backgroundColor = _getDefaultBackgroundColor();
-    }
-
     return GestureDetector(
       onLongPress: onLongPress,
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: Colors.grey.shade200, width: 1),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.08),
-              blurRadius: 15,
-              offset: const Offset(0, 5),
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 2),
             ),
           ],
         ),
@@ -413,31 +375,38 @@ class _CharacterCard extends StatelessWidget {
                 width: double.infinity,
                 decoration: BoxDecoration(
                   borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-                  color: backgroundColor,
+                  color: Colors.grey.shade50,
                 ),
                 child: Stack(
                   children: [
                     Center(
                       child: Hero(
                         tag: 'character_${character.id}',
-                        child: CircleAvatar(
-                          radius: 40,
-                          backgroundImage: NetworkImage(character.avatarUrl),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Colors.grey.shade300, width: 2),
+                          ),
+                          child: CircleAvatar(
+                            radius: 40,
+                            backgroundImage: NetworkImage(character.avatarUrl),
+                            backgroundColor: Colors.white,
+                          ),
                         ),
                       ),
                     ),
                     
                     if (character.customTag != null)
                       Positioned(
-                        top: 8,
-                        left: 8,
+                        top: 12,
+                        right: 12,
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                           decoration: BoxDecoration(
                             color: character.isBuiltIn 
-                              ? Colors.orange.shade600 
-                              : Colors.purple.shade600,
-                            borderRadius: BorderRadius.circular(8),
+                              ? Colors.grey.shade700 
+                              : Colors.black87,
+                            borderRadius: BorderRadius.circular(10),
                           ),
                           child: Text(
                             character.customTag!,
@@ -501,13 +470,13 @@ class _CharacterCard extends StatelessWidget {
                               style: GoogleFonts.poppins(fontSize: 12),
                             ),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.blue.shade600,
+                              backgroundColor: Colors.black87,
                               foregroundColor: Colors.white,
                               padding: const EdgeInsets.symmetric(vertical: 8),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
                               ),
-                              elevation: 0,
+                              elevation: 2,
                             ),
                           ),
                         ),

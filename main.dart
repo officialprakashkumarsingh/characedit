@@ -30,12 +30,57 @@ class AhamAIApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(
           seedColor: Colors.grey,
           brightness: Brightness.light,
+          primary: Colors.black87,
+          secondary: Colors.grey.shade600,
+          surface: Colors.white,
+          background: const Color(0xFFF7F7F7),
         ),
         scaffoldBackgroundColor: const Color(0xFFF7F7F7),
         appBarTheme: const AppBarTheme(
           backgroundColor: Color(0xFFF7F7F7),
           elevation: 0,
           scrolledUnderElevation: 0,
+          foregroundColor: Colors.black87,
+          titleTextStyle: TextStyle(
+            color: Colors.black87,
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.black87,
+            foregroundColor: Colors.white,
+            elevation: 2,
+            shadowColor: Colors.black26,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+        ),
+        cardTheme: CardTheme(
+          color: Colors.white,
+          elevation: 4,
+          shadowColor: Colors.black.withOpacity(0.1),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.grey.shade300),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.grey.shade300),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(color: Colors.black87, width: 2),
+          ),
+          filled: true,
+          fillColor: Colors.white,
         ),
         fontFamily: 'Inter',
       ),
