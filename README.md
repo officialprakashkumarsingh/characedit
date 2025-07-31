@@ -1,87 +1,64 @@
-# AhamAI - Flutter Android App
+# PrakashAI
 
-A beautiful and modern AI chat application built with Flutter, featuring character interactions, RSS news discovery, and personalized conversations.
+Welcome to PrakashAI, an innovative AI-powered character chat application built with Flutter. This app allows users to interact with AI-driven characters, edit their profiles, and explore dynamic conversations enhanced by integrated RSS feeds for real-time content updates.
 
 ## Features
 
-- 🤖 **AI Chat**: Engage in conversations with multiple AI models
-- 👥 **AI Characters**: Create and chat with custom AI personalities  
-- 📰 **News Discovery**: Browse curated news articles from Indian and international RSS feeds
-- 💾 **Save & History**: Bookmark conversations and maintain chat history
-- 🎨 **Modern UI**: Clean, neutral design with white, grey, and silver color scheme
+- **Character Chat**: Engage in meaningful conversations with AI characters.
+- **Profile Editing**: Customize character profiles with unique traits and backgrounds.
+- **RSS Feed Integration**: Stay updated with news and content directly within the app.
+- **Responsive UI**: A modern, user-friendly interface optimized for both Android and iOS.
 
-## Dependencies Required
+## Getting Started
 
-Add these dependencies to your `pubspec.yaml`:
+### Prerequisites
 
-```yaml
-dependencies:
-  flutter:
-    sdk: flutter
-  http: ^1.1.0
-  google_fonts: ^6.1.0
-  flutter_markdown: ^0.6.18
-  shared_preferences: ^2.2.2
-  url_launcher: ^6.2.1
-  cached_network_image: ^3.3.0
-  timeago: ^3.6.0
+- Flutter SDK (version 3.0 or higher)
+- Dart (version 2.17 or higher)
+- Android Studio or Xcode for device simulation
 
-dev_dependencies:
-  flutter_test:
-    sdk: flutter
-  flutter_lints: ^3.0.0
-```
+### Installation
 
-## Android Manifest Permissions
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/officialprakashkumarsingh/characedit.git
+   cd characedit
+   ```
 
-Add these permissions to your `android/app/src/main/AndroidManifest.xml`:
+2. Install dependencies:
+   ```bash
+   flutter pub get
+   ```
 
-```xml
-<uses-permission android:name="android.permission.INTERNET" />
-<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-```
+3. Run the app:
+   ```bash
+   flutter run
+   ```
 
-## Setup Instructions
+## Project Structure
 
-1. **Clone the repository**
-2. **Install dependencies**: `flutter pub get`
-3. **Run the app**: `flutter run`
-
-## API Configuration
-
-The app uses a custom AI API endpoint. Update the base URL in the code if needed:
-- Base URL: `https://api-aham-ai.officialprakashkrsingh.workers.dev`
-- Authorization: Uses bearer token authentication
-
-## News Sources (RSS Feeds)
-
-The discover page aggregates news from:
-- **Indian Sources**: Times of India, Hindustan Times, The Hindu, Indian Express
-- **International**: BBC, Reuters, AP News, Guardian
-
-## Design Philosophy
-
-- **Neutral Color Palette**: White backgrounds, grey accents, silver highlights
-- **No Gradients**: Clean, flat design approach
-- **Modern UI**: Rounded corners, subtle shadows, smooth animations
-- **Accessibility**: High contrast, readable fonts, intuitive navigation
-
-## File Structure
-
-- `main.dart` - App entry point
-- `main_shell.dart` - Main navigation shell
-- `chat_page.dart` - AI chat interface
-- `characters_page.dart` - Character management
-- `discover_page.dart` - News and articles discovery
-- `saved_page.dart` - Bookmarks and chat history
-- `models.dart` - Data models
-- `character_models.dart` - Character-specific models
-- Authentication pages and services
+- `lib/` - Contains the main Dart code for the application.
+  - `main.dart` - Entry point of the app.
+  - `main_shell.dart` - Core app shell with navigation logic.
+  - `pages/` - UI screens for character interactions and editing.
+- `android/` - Android-specific configurations.
+- `ios/` - iOS-specific configurations.
+- `assets/` - Static resources like images and icons.
 
 ## Contributing
 
-Feel free to submit issues and pull requests to improve the app!
+We welcome contributions to enhance PrakashAI. To contribute:
+
+1. Fork the repository.
+2. Create a new branch (`git checkout -b feature/your-feature-name`).
+3. Commit your changes (`git commit -m 'Add some feature'`).
+4. Push to the branch (`git push origin feature/your-feature-name`).
+5. Open a pull request.
 
 ## License
 
-This project is licensed under the MIT License.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Contact
+
+For inquiries or support, please reach out to the project maintainer at [officialprakashkumarsingh](https://github.com/officialprakashkumarsingh).

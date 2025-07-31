@@ -1,91 +1,38 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-
-import 'auth_and_profile_pages.dart';
-import 'auth_service.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:characedit/main_shell.dart';
+import 'package:characedit/providers/theme_provider.dart';
 
 void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-  // Initialize the AuthService singleton so it's available everywhere
-  AuthService(); 
-  
-  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    systemNavigationBarColor: Color(0xFFF7F7F7),
-    statusBarColor: Colors.transparent,
-    systemNavigationBarIconBrightness: Brightness.dark,
-    statusBarIconBrightness: Brightness.dark,
-  ));
-  runApp(const AhamAIApp());
+  runApp(
+    const ProviderScope(
+      child: PrakashAIApp(),
+    ),
+  );
 }
 
-class AhamAIApp extends StatelessWidget {
-  const AhamAIApp({super.key});
+class PrakashAIApp extends ConsumerWidget {
+  const PrakashAIApp({super.key});
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeMode = ref.watch(themeModeProvider);
+
     return MaterialApp(
-      title: 'AhamAI',
-      debugShowCheckedModeBanner: false,
+      title: 'PrakashAI',
       theme: ThemeData(
-        useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.grey,
-          brightness: Brightness.light,
-          primary: Colors.black87,
-          secondary: Colors.grey.shade600,
-          surface: Colors.white,
-          background: const Color(0xFFF7F7F7),
-        ),
-        scaffoldBackgroundColor: const Color(0xFFF7F7F7),
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Color(0xFFF7F7F7),
-          elevation: 0,
-          scrolledUnderElevation: 0,
-          foregroundColor: Colors.black87,
-          titleTextStyle: TextStyle(
-            color: Colors.black87,
-            fontSize: 20,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.black87,
-            foregroundColor: Colors.white,
-            elevation: 2,
-            shadowColor: Colors.black26,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-          ),
-        ),
-        cardTheme: CardTheme(
-          color: Colors.white,
-          elevation: 4,
-          shadowColor: Colors.black.withOpacity(0.1),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-        ),
-        inputDecorationTheme: InputDecorationTheme(
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: Colors.grey.shade300),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: Colors.grey.shade300),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(color: Colors.black87, width: 2),
-          ),
-          filled: true,
-          fillColor: Colors.white,
-        ),
-        fontFamily: 'Inter',
+        primarySwatch: Colors.blue,
+        brightness: Brightness.light,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      // AuthGate will decide which page to show
-      home: const AuthGate(),
+      darkTheme: ThemeData(
+        primarySwatch: Colors.blue,
+        brightness: Brightness.dark,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      ),
+      themeMode: themeMode,
+      home: const MainShell(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
